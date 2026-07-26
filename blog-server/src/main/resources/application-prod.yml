@@ -1,0 +1,18 @@
+spring:
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    url: ${BLOG_DB_URL}
+    username: ${BLOG_DB_USERNAME}
+    password: ${BLOG_DB_PASSWORD}
+
+blog:
+  jwt:
+    # 正式环境只通过 HTTPS 发送 Refresh Token Cookie。
+    secure-cookie: true
+
+logging:
+  file:
+    name: ./logs/blog-server.log
+  level:
+    root: info
+    com.eric.blog: info

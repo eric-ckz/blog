@@ -1,0 +1,19 @@
+spring:
+  config:
+    # 本地敏感配置单独保存在项目根目录，文件已加入 Git 忽略列表。
+    # 环境变量仍具有更高优先级，CI 或临时调试时可直接覆盖这些值。
+    # 第一条适用于以 blog-server 为工作目录启动，第二条兼容从仓库根目录启动。
+    import: optional:file:./application-local.yml,optional:file:./blog-server/application-local.yml
+  datasource:
+    driver-class-name: com.mysql.cj.jdbc.Driver
+    # 开发环境直接连接本机 MySQL；参数用于统一 Unicode、时区和本地认证行为。
+    url: ${BLOG_DB_URL:jdbc:mysql://127.0.0.1:3306/blog?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&allowPublicKeyRetrieval=true&useSSL=false}
+    username: ${BLOG_DB_USERNAME:root}
+#    username: root
+    # 不为密码提供仓库内默认值，实际值由被忽略的 application-local.yml 或环境变量提供。
+    password: ${BLOG_DB_PASSWORD:}
+#    password: 123456
+
+logging:
+  level:
+    com.eric.blog: debug
