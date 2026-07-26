@@ -113,8 +113,8 @@
 
       <section class="manifesto section-shell" v-reveal>
         <div>
-          <h2>Stay Hungry, Stay Foolish.</h2>
-          <p>求知若渴，虚怀若愚。—— 这是 2020 年创刊号上的第一句话，也是之后的每一年。</p>
+          <h2>{{ data.manifesto?.title || 'Stay Hungry, Stay Foolish.' }}</h2>
+          <p>{{ data.manifesto?.text || '求知若渴，虚怀若愚。—— 这是 2020 年创刊号上的第一句话，也是之后的每一年。' }}</p>
           <router-link to="/article/526">读一读创刊号 <ArrowRight :size="17" /></router-link>
         </div>
       </section>

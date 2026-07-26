@@ -22,4 +22,16 @@ describe('httpArticleRepository', () => {
     expect(result.items[0]).toMatchObject({ id: '1', coverUrl: '/a.jpg', publishedAt: '2026-01-01' })
     expect(result.hasMore).toBe(false)
   })
+
+  it('does not leak frontend all sentinels into Java query parameters', async () => {
+    const client = axios.create()
+    const mock = new MockAdapter(client)
+    mock.onGet('/articles').reply((config) => {
+      expect(config.params).toEqual({ page: 1, pageSize: 15 })
+      return [200, { items: [], total: 0, page: 1, pageSize: 15, hasMore: false }]
+    })
+
+    const repository = createHttpArticleRepository(client)
+    await repository.getArticles({ category: 'all', year: 'all', keyword: '   ' })
+  })
 })

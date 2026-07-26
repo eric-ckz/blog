@@ -32,3 +32,31 @@ The frontend defaults to `VITE_DATA_MODE=mock`. Set `VITE_DATA_MODE=api` and
 Article detail adds `contentHtml`, `readMinutes`, `originalUrl`, `previous`, and
 `next`. Pagination responses use `{ items, total, page, pageSize, hasMore }`.
 All IDs are strings. Dates use ISO `YYYY-MM-DD` values.
+
+Archive responses are grouped as years and months. Month groups deliberately use
+the same `count` and `items` field names as the mock repository:
+
+```json
+[
+  {
+    "year": 2026,
+    "count": 24,
+    "months": [
+      { "month": 7, "label": "七月", "count": 2, "items": [] }
+    ]
+  }
+]
+```
+
+## Unified response
+
+API mode uses a unified envelope. The repository automatically unwraps `data`, so
+page components continue receiving the structures documented above.
+
+```json
+{
+  "code": "20000",
+  "message": "ok",
+  "data": {}
+}
+```
