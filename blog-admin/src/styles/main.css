@@ -1,0 +1,71 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+:root {
+  font-family: Inter, "PingFang SC", "Microsoft YaHei", system-ui, sans-serif;
+  color: #202536;
+  background: #f3f5fa;
+  font-synthesis: none;
+}
+
+* { box-sizing: border-box; }
+body { margin: 0; min-width: 320px; min-height: 100vh; }
+button, input, textarea { font: inherit; }
+
+.admin-shell { min-height: 100vh; background:
+  radial-gradient(circle at 92% 8%, rgba(126, 136, 255, .16), transparent 27rem),
+  radial-gradient(circle at 20% 92%, rgba(107, 203, 183, .12), transparent 25rem), #f3f5fa; }
+.admin-sidebar { position: fixed; inset: 0 auto 0 0; z-index: 30; width: 252px; padding: 22px 16px;
+  display: flex; flex-direction: column; color: #e9ecff; background: rgba(24, 28, 45, .96);
+  border-right: 1px solid rgba(255,255,255,.08); backdrop-filter: blur(18px); }
+.admin-brand { display: flex; align-items: center; gap: 12px; padding: 4px 6px 28px; }
+.brand-mark { width: 42px; height: 42px; display: grid; place-items: center; border-radius: 14px;
+  font: 700 21px Georgia, serif; background: linear-gradient(145deg, #7b83ff, #bd74d8); box-shadow: 0 10px 30px rgba(103,111,247,.35); }
+.admin-brand strong { display: block; font-family: Georgia, serif; font-size: 17px; }
+.admin-brand span { display: block; margin-top: 3px; color: #8990ab; font-size: 9px; letter-spacing: .15em; }
+.admin-nav { display: grid; gap: 6px; }
+.admin-nav a { display: flex; align-items: center; gap: 12px; padding: 12px 14px; color: #aeb4cb; border-radius: 12px; text-decoration: none; transition: .2s ease; }
+.admin-nav a:hover { color: #fff; background: rgba(255,255,255,.07); transform: translateX(2px); }
+.admin-nav a.active { color: #fff; background: linear-gradient(120deg, rgba(102,111,242,.9), rgba(130,91,196,.84)); box-shadow: 0 8px 24px rgba(45,51,126,.35); }
+.sidebar-user { margin-top: auto; display: flex; align-items: center; gap: 10px; padding: 14px 8px 2px; border-top: 1px solid rgba(255,255,255,.08); }
+.user-avatar { width: 36px; height: 36px; display: grid; place-items: center; border-radius: 50%; color: #252941; background: #fff; font-weight: 700; }
+.user-copy { min-width: 0; flex: 1; }.user-copy strong,.user-copy span { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+.user-copy strong { font-size: 13px; }.user-copy span { margin-top: 2px; color: #7e859d; font-size: 11px; }
+.sidebar-user button,.sidebar-close,.mobile-menu { border: 0; color: inherit; background: transparent; cursor: pointer; }
+.sidebar-close { display: none; margin-left: auto; }
+.admin-main { min-height: 100vh; padding-left: 252px; }
+.admin-topbar { height: 92px; padding: 0 38px; display: flex; align-items: center; gap: 16px; border-bottom: 1px solid rgba(42,47,67,.08); background: rgba(255,255,255,.64); backdrop-filter: blur(15px); }
+.admin-topbar h1 { margin: 2px 0 0; font: 600 25px Georgia, "Songti SC", serif; }.eyebrow { color: #858ba0; font-size: 9px; letter-spacing: .18em; }
+.admin-topbar a { margin-left: auto; color: #6168d7; font-size: 13px; text-decoration: none; }
+.mobile-menu { display: none; color: #30364b; }
+.admin-content { padding: 30px 38px 50px; }
+.page-heading { display: flex; justify-content: space-between; gap: 20px; align-items: flex-start; margin-bottom: 22px; }
+.page-heading h2 { margin: 0; font: 600 25px Georgia, "Songti SC", serif; }.page-heading p { margin: 8px 0 0; color: #7a8092; font-size: 13px; }
+.page-heading-actions { display: flex; gap: 10px; }
+.panel { padding: 22px; border: 1px solid rgba(49,55,76,.08); border-radius: 18px; background: rgba(255,255,255,.82); box-shadow: 0 12px 35px rgba(29,34,58,.06); }
+.toolbar { display: flex; flex-wrap: wrap; gap: 12px; margin-bottom: 18px; }
+.metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0,1fr)); gap: 16px; }
+.metric-card { padding: 22px; border-radius: 18px; background: rgba(255,255,255,.84); border: 1px solid rgba(50,55,80,.08); box-shadow: 0 12px 30px rgba(34,39,67,.05); }
+.metric-card span { color: #858a9b; font-size: 12px; }.metric-card strong { display: block; margin-top: 11px; font: 600 31px Georgia, serif; }.metric-card small { color: #6b72df; }
+.media-grid { display: grid; grid-template-columns: repeat(auto-fill,minmax(180px,1fr)); gap: 16px; }
+.media-card { overflow: hidden; border-radius: 15px; border: 1px solid #e7e9f0; background: #fff; }
+.media-card img { width: 100%; aspect-ratio: 4/3; object-fit: cover; display: block; background: #eef0f5; }
+.media-card-body { padding: 12px; }.media-card-body strong { display: block; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; font-size: 12px; }
+.media-card-actions { display: flex; justify-content: space-between; align-items: center; margin-top: 8px; color: #8a8f9f; font-size: 11px; }
+.editor-toolbar { display: flex; flex-wrap: wrap; gap: 6px; padding: 10px; border: 1px solid #dcdfe6; border-bottom: 0; border-radius: 8px 8px 0 0; background: #f7f8fb; }
+.editor-toolbar button { padding: 5px 9px; border: 0; border-radius: 6px; background: transparent; cursor: pointer; }.editor-toolbar button.is-active { color: #fff; background: #636bdc; }
+.tiptap { min-height: 390px; padding: 20px; border: 1px solid #dcdfe6; border-radius: 0 0 8px 8px; outline: none; line-height: 1.85; background: #fff; }
+.tiptap img { max-width: 100%; }.tiptap blockquote { margin-left: 0; padding-left: 16px; border-left: 3px solid #7c83ea; color: #696f80; }
+.mobile-mask { display: none; }
+
+@media (max-width: 980px) {
+  .metric-grid { grid-template-columns: repeat(2, minmax(0,1fr)); }
+  .admin-sidebar { transform: translateX(-100%); transition: transform .25s ease; }.admin-sidebar.is-open { transform: translateX(0); }
+  .admin-main { padding-left: 0; }.mobile-menu,.sidebar-close { display: inline-grid; }.mobile-mask { display: block; position: fixed; inset: 0; z-index: 20; background: rgba(15,18,30,.45); }
+}
+@media (max-width: 640px) {
+  .admin-topbar { height: 78px; padding: 0 18px; }.admin-topbar h1 { font-size: 21px; }.admin-content { padding: 22px 16px 40px; }
+  .metric-grid { grid-template-columns: 1fr; }.page-heading { align-items: stretch; flex-direction: column; }.page-heading-actions { width: 100%; }
+  .page-heading-actions .el-button { flex: 1; }.panel { padding: 16px; border-radius: 14px; }
+}
