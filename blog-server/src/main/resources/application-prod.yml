@@ -7,12 +7,13 @@ spring:
 
 blog:
   jwt:
-    # 正式环境只通过 HTTPS 发送 Refresh Token Cookie。
-    secure-cookie: true
+    # HTTPS 环境必须保持 true；首次仅使用 IP+HTTP 部署时由环境变量显式关闭。
+    secure-cookie: ${BLOG_SECURE_COOKIE:true}
 
 logging:
   file:
-    name: ./logs/blog-server.log
+    # 生产日志写入持久化目录，避免版本切换时丢失。
+    name: ${BLOG_LOG_FILE:./logs/blog-server.log}
   level:
     root: info
     com.eric.blog: info

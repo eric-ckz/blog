@@ -11,6 +11,8 @@ const route = useRoute()
 const router = useRouter()
 const auth = useAuthStore()
 const mobileOpen = ref(false)
+// 生产地址由构建变量注入，避免管理端部署后仍跳回开发机 localhost。
+const blogWebUrl = import.meta.env.VITE_BLOG_WEB_URL || 'http://localhost:3000'
 
 const menuItems = [
   { to: '/', label: '工作台', icon: LayoutDashboard },
@@ -63,7 +65,7 @@ async function logout() {
       <header class="admin-topbar">
         <button class="mobile-menu" aria-label="打开菜单" @click="mobileOpen = true"><Menu :size="21" /></button>
         <div><span class="eyebrow">CHARLES BLOG</span><h1>{{ pageTitle }}</h1></div>
-        <a href="http://localhost:3000" target="_blank" rel="noreferrer">查看网站</a>
+        <a :href="blogWebUrl" target="_blank" rel="noreferrer">查看网站</a>
       </header>
       <div class="admin-content"><router-view /></div>
     </main>

@@ -24,3 +24,6 @@
 /.env
 *.log
 /.run-logs/
+/artifacts/
+/deploy-staging/
+/data/

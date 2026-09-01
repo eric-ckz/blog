@@ -1,0 +1,6 @@
+# 部署到 Linux 的脚本和配置必须保留 LF，避免 Bash 将 CR 识别为命令字符。
+deploy/**/*.sh text eol=lf
+deploy/**/*.py text eol=lf
+deploy/**/*.conf text eol=lf
+deploy/**/*.service text eol=lf
+deploy/**/*.yml text eol=lf

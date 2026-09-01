@@ -1,0 +1,17 @@
+[mysqld]
+# 数据库只供本机 Java 服务使用，不向公网或 Docker 网桥开放。
+bind-address = 127.0.0.1
+mysqlx-bind-address = 127.0.0.1
+
+# 服务器总内存约 4GB，需要为 OpenClaw、Java 和系统服务保留空间。
+innodb_buffer_pool_size = 256M
+max_connections = 50
+table_open_cache = 512
+tmp_table_size = 32M
+max_heap_table_size = 32M
+
+character-set-server = utf8mb4
+collation-server = utf8mb4_0900_ai_ci
+
+[client]
+default-character-set = utf8mb4

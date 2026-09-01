@@ -1,0 +1,46 @@
+name: charles-blog
+
+services:
+  nginx:
+    image: nginx:1.28-alpine
+    container_name: charles-blog-nginx
+    restart: unless-stopped
+    # Linux host 网络让容器可以代理宿主机仅监听 127.0.0.1:8080 的 Java 服务。
+    network_mode: host
+    volumes:
+      # 一次性挂载整个版本目录，避免在只读 web 挂载下创建 admin 子挂载点失败。
+      - /opt/charles-blog/current:/srv/release:ro
+      # 默认配置同时保留 HTTP/HTTPS；Cloudflare Tunnel 固定通过本机 80 端口回源。
+      - /opt/charles-blog/current/deploy/nginx/${NGINX_CONFIG_FILE:-nginx.conf}:/etc/nginx/nginx.conf:ro
+      # 证书和 ACME 校验目录均位于宿主机持久化目录，镜像升级不会影响续签。
+      - /etc/letsencrypt:/etc/letsencrypt:ro
+      - /var/lib/charles-blog/certbot-www:/var/www/certbot:ro
+    healthcheck:
+      # Tunnel 使用同一 HTTP 入口，健康检查也走 80，避免依赖不参与公网链路的源站证书。
+      test: ["CMD-SHELL", "wget -qO- http://127.0.0.1/ >/dev/null || exit 1"]
+      interval: 15s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"
+
+  cloudflared:
+    image: cloudflare/cloudflared:latest
+    container_name: charles-blog-cloudflared
+    restart: unless-stopped
+    # Tunnel 由服务器主动向 Cloudflare 建立出站连接，可绕过云厂商对域名 SNI 的入站拦截。
+    network_mode: host
+    command: tunnel --no-autoupdate run
+    env_file:
+      # 文件权限必须保持 600，且绝不能加入部署包或 Git。
+      - /etc/charles-blog/cloudflared.env
+    profiles: ["tunnel"]
+    logging:
+      driver: json-file
+      options:
+        max-size: "10m"
+        max-file: "3"

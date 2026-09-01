@@ -56,3 +56,10 @@ npm run test:e2e
 用户端开发地址为 `http://localhost:3000`，管理端为 `http://localhost:3100`，
 后端 API 与 Swagger UI 分别为 `http://localhost:8080/api` 和
 `http://localhost:8080/doc.html`。
+
+## 云服务器部署
+
+生产部署配置位于 `deploy`，采用 Cloudflare Tunnel + Docker Nginx + systemd Java + 本机 MySQL。
+线上用户端位于 `https://blog.45205044.xyz/`，管理端位于 `/admin/`。部署包不包含任何密码，
+敏感配置只在服务器 `/etc/charles-blog` 中生成。完整的构建、上传、数据库、Nginx、Tunnel、
+HTTPS、升级及回滚流程见 `deploy/PRODUCTION_DEPLOYMENT.md`。

@@ -2,7 +2,9 @@ import { defineConfig } from 'vite'
 import vue from '@vitejs/plugin-vue'
 import { fileURLToPath, URL } from 'node:url'
 
-export default defineConfig({
+export default defineConfig(({ mode }) => ({
+  // 生产环境挂载到同域名 /admin/；开发环境继续使用根路径，保持 npm run dev 体验不变。
+  base: mode === 'production' ? '/admin/' : '/',
   plugins: [vue()],
   resolve: {
     alias: { '@': fileURLToPath(new URL('./src', import.meta.url)) },
@@ -19,4 +21,4 @@ export default defineConfig({
       '/uploads': { target: 'http://localhost:8080', changeOrigin: true },
     },
   },
-})
+}))

@@ -3,7 +3,8 @@ import { useAuthStore } from '@/stores/auth'
 import AdminLayout from '@/layouts/AdminLayout.vue'
 
 const router = createRouter({
-  history: createWebHistory(),
+  // 使用 Vite 注入的 BASE_URL，生产环境刷新 /admin/articles 等路由时仍能正确匹配。
+  history: createWebHistory(import.meta.env.BASE_URL),
   routes: [
     { path: '/login', name: 'login', component: () => import('@/views/LoginView.vue'), meta: { public: true } },
     {

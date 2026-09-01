@@ -1,0 +1,30 @@
+[Unit]
+Description=Charles Blog Java API
+After=network-online.target mysql.service docker.service
+Wants=network-online.target
+Requires=mysql.service
+
+[Service]
+Type=simple
+User=ubuntu
+Group=ubuntu
+WorkingDirectory=/opt/charles-blog/current/server
+EnvironmentFile=/etc/charles-blog/blog-server.env
+ExecStart=/usr/bin/java -Xms128m -Xmx512m -XX:MaxMetaspaceSize=192m -XX:+UseG1GC -Dfile.encoding=UTF-8 -jar /opt/charles-blog/current/server/blog-server.jar
+SuccessExitStatus=143
+Restart=on-failure
+RestartSec=5s
+TimeoutStopSec=30s
+UMask=0027
+
+# 在仍使用 ubuntu 账号的前提下限制服务可写范围和最大资源占用。
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=true
+ReadWritePaths=/var/lib/charles-blog/uploads /var/log/charles-blog
+MemoryMax=896M
+TasksMax=256
+
+[Install]
+WantedBy=multi-user.target

@@ -1,0 +1,10 @@
+[Unit]
+Description=Daily Charles Blog Let's Encrypt renewal check
+
+[Timer]
+OnCalendar=*-*-* 03:25:00
+RandomizedDelaySec=45m
+Persistent=true
+
+[Install]
+WantedBy=timers.target
