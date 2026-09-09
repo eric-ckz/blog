@@ -18,4 +18,19 @@ public final class SecurityContextUtils {
         }
         return principal;
     }
+
+    /** 获取当前访客身份；未登录或身份类型不符时抛出未登录异常。 */
+    public static UserPrincipal currentUser() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (authentication == null || !(authentication.getPrincipal() instanceof UserPrincipal principal)) {
+            throw new BaseException(ErrorCode.NOT_LOGIN_ERROR);
+        }
+        return principal;
+    }
+
+    /** 判断当前请求是否已通过访客身份认证。 */
+    public static boolean isUserAuthenticated() {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        return authentication != null && authentication.getPrincipal() instanceof UserPrincipal;
+    }
 }

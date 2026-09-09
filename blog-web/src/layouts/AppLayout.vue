@@ -14,6 +14,14 @@
 </template>
 
 <script setup>
+import { onMounted } from 'vue'
 import AppHeader from './AppHeader.vue'
 import AppFooter from './AppFooter.vue'
+import { useAuthStore } from '@/stores/auth'
+
+const auth = useAuthStore()
+
+onMounted(() => {
+  auth.ensureSession()
+})
 </script>

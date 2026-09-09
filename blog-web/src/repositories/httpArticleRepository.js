@@ -16,7 +16,7 @@ export function createHttpArticleRepository(client = axios.create({
 })) {
   return {
     async getHomeData({ signal } = {}) {
-      const data = unwrapResponse(await client.get('/site/home', { signal }))
+      const data = unwrapResponse(await client.get('/web/site/home', { signal }))
       return {
         ...data,
         heroSlides: (data.heroSlides ?? []).map(normalizeArticle),
@@ -25,7 +25,7 @@ export function createHttpArticleRepository(client = axios.create({
       }
     },
     async getCategories({ signal } = {}) {
-      return unwrapResponse(await client.get('/categories', { signal }))
+      return unwrapResponse(await client.get('/web/categories', { signal }))
     },
     async getArticles({ category, year, keyword, page = 1, pageSize = 15, signal } = {}) {
       // “all” 只属于筛选控件的前端状态，不能传给要求整数年份的 Java DTO。
@@ -38,16 +38,16 @@ export function createHttpArticleRepository(client = axios.create({
         pageSize,
       }
       Object.keys(params).forEach((key) => params[key] == null && delete params[key])
-      return normalizePage(unwrapResponse(await client.get('/articles', { params, signal })))
+      return normalizePage(unwrapResponse(await client.get('/web/articles', { params, signal })))
     },
     async getArticleById(id, { signal } = {}) {
-      return normalizeArticle(unwrapResponse(await client.get(`/articles/${encodeURIComponent(id)}`, { signal })))
+      return normalizeArticle(unwrapResponse(await client.get(`/common/articles/${encodeURIComponent(id)}`, { signal })))
     },
     async getArchive({ signal } = {}) {
-      return unwrapResponse(await client.get('/archive', { signal }))
+      return unwrapResponse(await client.get('/web/archive', { signal }))
     },
     async getAbout({ signal } = {}) {
-      return unwrapResponse(await client.get('/site/about', { signal }))
+      return unwrapResponse(await client.get('/web/site/about', { signal }))
     },
   }
 }

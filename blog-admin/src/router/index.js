@@ -17,6 +17,7 @@ const router = createRouter({
         { path: 'articles/:id/edit', name: 'article-edit', component: () => import('@/views/ArticleEditView.vue'), meta: { title: '编辑文章' } },
         { path: 'categories', name: 'categories', component: () => import('@/views/CategoriesView.vue'), meta: { title: '栏目管理' } },
         { path: 'media', name: 'media', component: () => import('@/views/MediaView.vue'), meta: { title: '媒体库' } },
+        { path: 'comments', name: 'comments', component: () => import('@/views/CommentsView.vue'), meta: { title: '评论管理' } },
         { path: 'site', name: 'site', component: () => import('@/views/SiteSettingsView.vue'), meta: { title: '首页配置' } },
         { path: 'about', name: 'about', component: () => import('@/views/AboutSettingsView.vue'), meta: { title: '关于页配置' } },
         { path: 'account', name: 'account', component: () => import('@/views/AccountView.vue'), meta: { title: '账号设置' } },

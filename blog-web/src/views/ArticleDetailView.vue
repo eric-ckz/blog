@@ -39,6 +39,8 @@
         </a>
       </footer>
 
+      <CommentSection :article-id="article.id" />
+
       <nav class="article-navigation" aria-label="相邻文章">
         <router-link v-if="article.previous" :to="`/article/${article.previous.id}`">
           <span><ArrowLeft :size="15" /> 更早一篇</span>
@@ -62,6 +64,7 @@ import { ArrowLeft, ArrowRight, ExternalLink, Eye, FileQuestion } from '@lucide/
 import articleRepository from '@/repositories/articleRepository'
 import LoadingState from '@/components/LoadingState.vue'
 import SmartImage from '@/components/SmartImage.vue'
+import CommentSection from '@/components/CommentSection.vue'
 
 const route = useRoute()
 const article = ref(null)

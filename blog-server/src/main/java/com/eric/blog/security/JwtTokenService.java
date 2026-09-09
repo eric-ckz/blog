@@ -28,6 +28,8 @@ public class JwtTokenService {
 
     private static final String ACCESS_TYPE = "access";
     private static final String REFRESH_TYPE = "refresh";
+    private static final String ROLE_ADMIN = "admin";
+    private static final String ROLE_USER = "user";
     private final JwtProperties properties;
     private byte[] secret;
 
@@ -39,33 +41,53 @@ public class JwtTokenService {
         }
     }
 
-    /** 创建短期 Access Token。 */
+    /** 创建管理员短期 Access Token。 */
     public String createAccessToken(Long userId, String username) {
-        return createToken(userId, username, ACCESS_TYPE, properties.getAccessTokenTtl().toSeconds());
+        return createToken(userId, username, ACCESS_TYPE, ROLE_ADMIN, properties.getAccessTokenTtl().toSeconds());
     }
 
-    /** 创建可轮换的 Refresh Token。 */
+    /** 创建管理员可轮换的 Refresh Token。 */
     public String createRefreshToken(Long userId, String username) {
-        return createToken(userId, username, REFRESH_TYPE, properties.getRefreshTokenTtl().toSeconds());
+        return createToken(userId, username, REFRESH_TYPE, ROLE_ADMIN, properties.getRefreshTokenTtl().toSeconds());
     }
 
-    /** 校验并解析 Access Token。 */
+    /** 创建访客短期 Access Token。 */
+    public String createUserAccessToken(Long userId, String username) {
+        return createToken(userId, username, ACCESS_TYPE, ROLE_USER, properties.getAccessTokenTtl().toSeconds());
+    }
+
+    /** 创建访客可轮换的 Refresh Token。 */
+    public String createUserRefreshToken(Long userId, String username) {
+        return createToken(userId, username, REFRESH_TYPE, ROLE_USER, properties.getRefreshTokenTtl().toSeconds());
+    }
+
+    /** 校验并解析管理员 Access Token。 */
     public TokenClaims parseAccessToken(String token) {
-        return parse(token, ACCESS_TYPE);
+        return parse(token, ACCESS_TYPE, ROLE_ADMIN);
     }
 
-    /** 校验并解析 Refresh Token。 */
+    /** 校验并解析管理员 Refresh Token。 */
     public TokenClaims parseRefreshToken(String token) {
-        return parse(token, REFRESH_TYPE);
+        return parse(token, REFRESH_TYPE, ROLE_ADMIN);
     }
 
-    private String createToken(Long userId, String username, String type, long ttlSeconds) {
+    /** 校验并解析访客 Access Token。 */
+    public TokenClaims parseUserAccessToken(String token) {
+        return parse(token, ACCESS_TYPE, ROLE_USER);
+    }
+
+    /** 校验并解析访客 Refresh Token。 */
+    public TokenClaims parseUserRefreshToken(String token) {
+        return parse(token, REFRESH_TYPE, ROLE_USER);
+    }
+
+    private String createToken(Long userId, String username, String type, String role, long ttlSeconds) {
         try {
             Instant now = Instant.now();
             JWTClaimsSet claims = new JWTClaimsSet.Builder()
                     .issuer(properties.getIssuer()).subject(String.valueOf(userId)).jwtID(UUID.randomUUID().toString())
                     .issueTime(Date.from(now)).expirationTime(Date.from(now.plusSeconds(ttlSeconds)))
-                    .claim("username", username).claim("type", type).build();
+                    .claim("username", username).claim("type", type).claim("role", role).build();
             SignedJWT jwt = new SignedJWT(new JWSHeader(JWSAlgorithm.HS256), claims);
             jwt.sign(new MACSigner(secret));
             return jwt.serialize();
@@ -74,14 +96,15 @@ public class JwtTokenService {
         }
     }
 
-    private TokenClaims parse(String token, String expectedType) {
+    private TokenClaims parse(String token, String expectedType, String expectedRole) {
         try {
             SignedJWT jwt = SignedJWT.parse(token);
             JWTClaimsSet claims = jwt.getJWTClaimsSet();
             boolean valid = jwt.verify(new MACVerifier(secret))
                     && properties.getIssuer().equals(claims.getIssuer())
                     && claims.getExpirationTime() != null && claims.getExpirationTime().after(new Date())
-                    && expectedType.equals(claims.getStringClaim("type"));
+                    && expectedType.equals(claims.getStringClaim("type"))
+                    && expectedRole.equals(claims.getStringClaim("role"));
             if (!valid) {
                 throw new BaseException(ErrorCode.NOT_LOGIN_ERROR);
             }

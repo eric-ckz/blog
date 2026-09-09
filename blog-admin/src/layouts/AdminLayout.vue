@@ -4,7 +4,7 @@ import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import {
   LayoutDashboard, FileText, Tags, Images, SlidersHorizontal,
-  UserRound, LogOut, Menu, X, BookOpen,
+  UserRound, LogOut, Menu, X, BookOpen, MessageSquare,
 } from '@lucide/vue'
 
 const route = useRoute()
@@ -19,6 +19,7 @@ const menuItems = [
   { to: '/articles', label: '文章管理', icon: FileText },
   { to: '/categories', label: '栏目管理', icon: Tags },
   { to: '/media', label: '媒体库', icon: Images },
+  { to: '/comments', label: '评论管理', icon: MessageSquare },
   { to: '/site', label: '首页配置', icon: SlidersHorizontal },
   { to: '/about', label: '关于页配置', icon: BookOpen },
   { to: '/account', label: '账号设置', icon: UserRound },

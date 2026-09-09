@@ -20,6 +20,21 @@
         </router-link>
       </nav>
 
+      <div class="header-auth">
+        <template v-if="auth.authenticated">
+          <router-link class="auth-link" to="/profile">
+            <img v-if="auth.user?.avatarUrl" :src="auth.user.avatarUrl" class="auth-avatar" alt="头像" />
+            <span v-else class="auth-avatar auth-avatar-fallback">{{ initial }}</span>
+            <span class="auth-name">{{ auth.user?.displayName || auth.user?.username }}</span>
+          </router-link>
+          <button class="auth-link auth-logout" type="button" @click="logout">退出</button>
+        </template>
+        <template v-else>
+          <router-link class="auth-link" to="/login">登录</router-link>
+          <router-link class="auth-link auth-register" to="/register">注册</router-link>
+        </template>
+      </div>
+
       <button
         class="icon-button mobile-menu-button"
         type="button"
@@ -41,6 +56,14 @@
           >
             {{ link.label }}
           </router-link>
+          <template v-if="auth.authenticated">
+            <router-link class="mobile-nav-link" to="/profile">个人中心</router-link>
+            <button class="mobile-nav-link" type="button" @click="logout">退出登录</button>
+          </template>
+          <template v-else>
+            <router-link class="mobile-nav-link" to="/login">登录</router-link>
+            <router-link class="mobile-nav-link" to="/register">注册</router-link>
+          </template>
         </nav>
       </transition>
     </div>
@@ -48,13 +71,18 @@
 </template>
 
 <script setup>
-import { onBeforeUnmount, onMounted, ref, watch } from 'vue'
+import { computed, onBeforeUnmount, onMounted, ref, watch } from 'vue'
 import { Menu, X } from '@lucide/vue'
-import { useRoute } from 'vue-router'
+import { useRoute, useRouter } from 'vue-router'
+import { useAuthStore } from '@/stores/auth'
 
 const route = useRoute()
+const router = useRouter()
+const auth = useAuthStore()
 const mobileOpen = ref(false)
 const headerPanel = ref(null)
+
+const initial = computed(() => (auth.user?.displayName || auth.user?.username || '文').slice(0, 1))
 
 const navLinks = [
   { path: '/', label: '首页' },
@@ -76,6 +104,12 @@ function onPointerDown(event) {
 
 function onKeyDown(event) {
   if (event.key === 'Escape') mobileOpen.value = false
+}
+
+async function logout() {
+  await auth.logout()
+  mobileOpen.value = false
+  router.push('/')
 }
 
 watch(() => route.fullPath, () => { mobileOpen.value = false })

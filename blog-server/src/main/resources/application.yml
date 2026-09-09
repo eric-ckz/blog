@@ -40,7 +40,15 @@ blog:
     access-token-ttl: 15m
     refresh-token-ttl: 7d
     refresh-cookie-name: blog_refresh_token
+    user-refresh-cookie-name: blog_user_refresh_token
     secure-cookie: false
+  mail:
+    enabled: ${BLOG_MAIL_ENABLED:false}
+    host: ${BLOG_MAIL_HOST:}
+    port: ${BLOG_MAIL_PORT:465}
+    username: ${BLOG_MAIL_USERNAME:}
+    password: ${BLOG_MAIL_PASSWORD:}
+    from: ${BLOG_MAIL_FROM:}
   storage:
     type: local
     # 相对路径固定以 blog-server 模块目录为基准；部署时可通过环境变量传入绝对路径。

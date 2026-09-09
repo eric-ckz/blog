@@ -36,6 +36,24 @@ const routes = [
     component: () => import('@/views/AboutView.vue'),
   },
   {
+    path: '/login',
+    name: 'Login',
+    meta: { title: '登录' },
+    component: () => import('@/views/LoginView.vue'),
+  },
+  {
+    path: '/register',
+    name: 'Register',
+    meta: { title: '注册' },
+    component: () => import('@/views/RegisterView.vue'),
+  },
+  {
+    path: '/profile',
+    name: 'Profile',
+    meta: { title: '个人中心' },
+    component: () => import('@/views/ProfileView.vue'),
+  },
+  {
     path: '/:pathMatch(.*)*',
     redirect: '/',
   },

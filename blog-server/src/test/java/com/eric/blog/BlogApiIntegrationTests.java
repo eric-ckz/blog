@@ -49,25 +49,25 @@ class BlogApiIntegrationTests {
 
     @Test
     void publicApiUsesStableEnvelopeAndFrontendCompatibleShapes() throws Exception {
-        HttpResponse<String> home = request("GET", "/api/site/home", null, null);
+        HttpResponse<String> home = request("GET", "/api/web/site/home", null, null);
         assertThat(home.statusCode()).isEqualTo(200);
         assertThat(JsonPath.<String>read(home.body(), "$.code")).isEqualTo("20000");
         assertThat(JsonPath.<Number>read(home.body(), "$.data.stats.articles").intValue()).isEqualTo(528);
         assertThat(JsonPath.<java.util.List<?>>read(home.body(), "$.data.heroSlides")).hasSize(3);
         assertThat(JsonPath.<java.util.List<?>>read(home.body(), "$.data.featured")).hasSize(4);
 
-        HttpResponse<String> articles = request("GET", "/api/articles?page=1&pageSize=6", null, null);
+        HttpResponse<String> articles = request("GET", "/api/web/articles?page=1&pageSize=6", null, null);
         assertThat(articles.statusCode()).isEqualTo(200);
         assertThat(JsonPath.<Number>read(articles.body(), "$.data.total").longValue()).isGreaterThanOrEqualTo(24);
         assertThat(JsonPath.<java.util.List<?>>read(articles.body(), "$.data.items")).hasSize(6);
         assertThat(JsonPath.<Boolean>read(articles.body(), "$.data.hasMore")).isTrue();
 
-        HttpResponse<String> archive = request("GET", "/api/archive", null, null);
+        HttpResponse<String> archive = request("GET", "/api/web/archive", null, null);
         assertThat(archive.statusCode()).isEqualTo(200);
         assertThat(JsonPath.<Number>read(archive.body(), "$.data[0].months[0].count").intValue()).isPositive();
         assertThat(JsonPath.<java.util.List<?>>read(archive.body(), "$.data[0].months[0].items")).isNotEmpty();
 
-        HttpResponse<String> notFound = request("GET", "/api/articles/999999999", null, null);
+        HttpResponse<String> notFound = request("GET", "/api/common/articles/999999999", null, null);
         assertThat(notFound.statusCode()).isEqualTo(404);
         assertThat(JsonPath.<String>read(notFound.body(), "$.code")).isEqualTo("40400");
     }
@@ -130,7 +130,7 @@ class BlogApiIntegrationTests {
         assertThat(created.statusCode()).isEqualTo(200);
         String articleId = JsonPath.read(created.body(), "$.data.id");
 
-        HttpResponse<String> detail = request("GET", "/api/articles/" + articleId, null, null);
+        HttpResponse<String> detail = request("GET", "/api/common/articles/" + articleId, null, null);
         assertThat(detail.statusCode()).isEqualTo(200);
         assertThat(JsonPath.<String>read(detail.body(), "$.data.contentHtml"))
                 .contains("安全正文")
@@ -141,7 +141,7 @@ class BlogApiIntegrationTests {
 
         HttpResponse<String> deletedArticle = request("DELETE", "/api/admin/articles/" + articleId, null, accessToken);
         assertThat(deletedArticle.statusCode()).isEqualTo(200);
-        assertThat(request("GET", "/api/articles/" + articleId, null, null).statusCode()).isEqualTo(404);
+        assertThat(request("GET", "/api/common/articles/" + articleId, null, null).statusCode()).isEqualTo(404);
 
         HttpResponse<String> deletedMedia = request("DELETE", "/api/admin/media/" + mediaId, null, accessToken);
         assertThat(deletedMedia.statusCode()).isEqualTo(200);

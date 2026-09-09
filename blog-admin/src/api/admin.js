@@ -40,3 +40,8 @@ export const siteApi = {
   about: () => http.get('/admin/site/about'),
   updateAbout: (payload) => http.put('/admin/site/about', payload),
 }
+
+export const commentApi = {
+  list: (params) => http.get('/admin/comments', { params }),
+  remove: (id) => http.delete(`/admin/comments/${id}`),
+}

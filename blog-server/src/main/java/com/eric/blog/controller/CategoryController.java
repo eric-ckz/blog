@@ -13,7 +13,7 @@ import java.util.List;
 /** 用户端栏目公开接口。 */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/categories")
+@RequestMapping("/api/web/categories")
 public class CategoryController {
 
     private final CategoryService categoryService;

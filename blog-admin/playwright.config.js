@@ -16,7 +16,7 @@ export default defineConfig({
   webServer: [
     {
       command: 'mvn -f ../blog-server/pom.xml spring-boot:run',
-      url: 'http://127.0.0.1:8080/api/site/home',
+      url: 'http://127.0.0.1:8080/api/web/site/home',
       timeout: 120_000,
       reuseExistingServer: true,
       env: backendEnv,

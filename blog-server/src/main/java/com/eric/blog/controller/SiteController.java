@@ -12,7 +12,7 @@ import org.springframework.web.bind.annotation.RestController;
 /** 用户端首页与关于页公开接口。 */
 @RestController
 @RequiredArgsConstructor
-@RequestMapping("/api/site")
+@RequestMapping("/api/web/site")
 public class SiteController {
 
     private final SiteService siteService;

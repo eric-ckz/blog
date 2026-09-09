@@ -2,10 +2,12 @@ package com.eric.blog.config;
 
 import com.eric.blog.common.ErrorCode;
 import com.eric.blog.security.JwtAuthenticationFilter;
+import com.eric.blog.security.UserJwtAuthenticationFilter;
 import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpMethod;
 import org.springframework.http.MediaType;
 import org.springframework.security.config.Customizer;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -27,6 +29,7 @@ import java.util.List;
 public class SecurityConfig {
 
     private final JwtAuthenticationFilter jwtAuthenticationFilter;
+    private final UserJwtAuthenticationFilter userJwtAuthenticationFilter;
     private final CorsProperties corsProperties;
 
     @Bean
@@ -44,6 +47,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/api/admin/auth/login", "/api/admin/auth/refresh", "/api/admin/auth/logout").permitAll()
                         .requestMatchers("/api/admin/**").authenticated()
+                        .requestMatchers(HttpMethod.POST, "/api/common/articles/*/comments").authenticated()
                         .anyRequest().permitAll())
                 .exceptionHandling(errors -> errors
                         .authenticationEntryPoint((request, response, exception) -> writeSecurityError(response,
@@ -51,6 +55,7 @@ public class SecurityConfig {
                         .accessDeniedHandler((request, response, exception) -> writeSecurityError(response,
                                 ErrorCode.NO_AUTH_ERROR)))
                 .addFilterBefore(jwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
+                .addFilterBefore(userJwtAuthenticationFilter, UsernamePasswordAuthenticationFilter.class)
                 .build();
     }
 

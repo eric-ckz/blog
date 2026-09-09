@@ -7,7 +7,7 @@ describe('httpArticleRepository', () => {
   it('passes filters and normalizes a paginated response', async () => {
     const client = axios.create()
     const mock = new MockAdapter(client)
-    mock.onGet('/articles').reply((config) => {
+    mock.onGet('/web/articles').reply((config) => {
       expect(config.params.category).toBe('travel')
       return [200, {
         items: [{ id: 1, title: 'A', cover: '/a.jpg', createdAt: '2026-01-01' }],
@@ -26,7 +26,7 @@ describe('httpArticleRepository', () => {
   it('does not leak frontend all sentinels into Java query parameters', async () => {
     const client = axios.create()
     const mock = new MockAdapter(client)
-    mock.onGet('/articles').reply((config) => {
+    mock.onGet('/web/articles').reply((config) => {
       expect(config.params).toEqual({ page: 1, pageSize: 15 })
       return [200, { items: [], total: 0, page: 1, pageSize: 15, hasMore: false }]
     })

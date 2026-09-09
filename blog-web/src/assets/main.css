@@ -245,6 +245,68 @@ select:focus-visible {
   box-shadow: 0 10px 24px -10px rgba(41, 41, 61, 0.62), inset 0 1px 0 rgba(255, 255, 255, 0.25);
 }
 
+.header-auth {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.auth-link {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 9px 14px;
+  border-radius: 999px;
+  color: #51525a;
+  font-size: 14px;
+  transition: color 200ms ease, background 200ms ease;
+}
+
+.auth-link:hover {
+  color: #1e1f24;
+  background: rgba(255, 255, 255, 0.48);
+}
+
+.auth-register {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(33, 33, 39, 0.93), rgba(52, 52, 61, 0.9));
+}
+
+.auth-register:hover {
+  color: #fff;
+  background: linear-gradient(135deg, rgba(33, 33, 39, 0.98), rgba(52, 52, 61, 0.96));
+}
+
+.auth-avatar {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+.auth-avatar-fallback {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  color: #fff;
+  background: linear-gradient(145deg, #222329, #474750);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.auth-name {
+  max-width: 120px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.auth-logout {
+  border: none;
+  background: transparent;
+  cursor: pointer;
+}
+
 .icon-button {
   display: inline-flex;
   width: 40px;
@@ -1656,6 +1718,7 @@ a:hover .smart-image img {
   .brand-copy strong { font-size: 14px; }
   .brand-copy small { font-size: 8px; }
   .desktop-nav { display: none; }
+  .header-auth { display: none; }
   .mobile-menu-button { display: inline-flex; flex: 0 0 40px; border: 0; background: transparent; box-shadow: none; }
   .mobile-nav {
     position: absolute;
@@ -1669,6 +1732,7 @@ a:hover .smart-image img {
     border-radius: 26px;
   }
   .mobile-nav-link { padding: 13px 20px; border-radius: 14px; color: #4f5058; font-size: 15px; }
+  .mobile-nav button.mobile-nav-link { width: 100%; border: 0; background: transparent; text-align: left; cursor: pointer; }
   .menu-enter-active,
   .menu-leave-active { transition: opacity 180ms ease, transform 180ms ease; }
   .menu-enter-from,

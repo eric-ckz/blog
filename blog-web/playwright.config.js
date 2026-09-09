@@ -20,7 +20,7 @@ export default defineConfig({
     {
       // 端到端测试强制使用真实 Java API，避免 mock 模式掩盖响应契约差异。
       command: 'mvn -f ../blog-server/pom.xml spring-boot:run',
-      url: 'http://127.0.0.1:8080/api/site/home',
+      url: 'http://127.0.0.1:8080/api/web/site/home',
       timeout: 120_000,
       reuseExistingServer: true,
       env: backendEnv,
