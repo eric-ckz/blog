@@ -1,10 +1,10 @@
-<script setup>
+﻿<script setup>
 import { computed, ref } from 'vue'
 import { useRoute, useRouter } from 'vue-router'
 import { useAuthStore } from '@/stores/auth'
 import {
   LayoutDashboard, FileText, Tags, Images, SlidersHorizontal,
-  UserRound, LogOut, Menu, X, BookOpen, MessageSquare,
+  UserRound, Users, LogOut, Menu, X, BookOpen, MessageSquare,
 } from '@lucide/vue'
 
 const route = useRoute()
@@ -20,6 +20,7 @@ const menuItems = [
   { to: '/categories', label: '栏目管理', icon: Tags },
   { to: '/media', label: '媒体库', icon: Images },
   { to: '/comments', label: '评论管理', icon: MessageSquare },
+  { to: '/users', label: '用户管理', icon: Users },
   { to: '/site', label: '首页配置', icon: SlidersHorizontal },
   { to: '/about', label: '关于页配置', icon: BookOpen },
   { to: '/account', label: '账号设置', icon: UserRound },

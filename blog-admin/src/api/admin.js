@@ -1,4 +1,4 @@
-import { http } from './http'
+﻿import { http } from './http'
 
 export const authApi = {
   login: (payload) => http.post('/admin/auth/login', payload),
@@ -44,4 +44,9 @@ export const siteApi = {
 export const commentApi = {
   list: (params) => http.get('/admin/comments', { params }),
   remove: (id) => http.delete(`/admin/comments/${id}`),
+}
+
+export const userApi = {
+  list: (params) => http.get('/admin/users', { params }),
+  setEnabled: (id, enabled) => http.put(`/admin/users/${id}/enabled`, { enabled }),
 }
