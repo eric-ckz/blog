@@ -1,4 +1,4 @@
-# Charles Blog
+# Eric Blog
 
 一个包含用户端、内容管理端和 Java API 服务的个人博客项目。
 
@@ -47,7 +47,7 @@ Testcontainers 用于后端集成测试。前端测试使用 Vitest、Vue Test U
 
 本地开发端口仍为用户端 `3000`、管理端 `3100`、后端 `8080`。生产环境只对外提供
 Cloudflare 的 HTTPS；Java 的 `8080` 和 MySQL 的 `3306` 只监听 `127.0.0.1`，不应开放公网。
-上传文件持久化在 `/var/lib/charles-blog/uploads`，日志在 `/var/log/charles-blog`。
+上传文件持久化在 `/var/lib/eric-blog/uploads`，日志在 `/var/log/eric-blog`。
 
 ## 云服务器需要安装的中间件
 
@@ -149,8 +149,8 @@ cd "${STAGING}"
 sha256sum --check manifest.sha256
 ```
 
-所有文件显示 `OK` 后，再复制到 `/opt/charles-blog/releases/<版本>`，并把
-`/opt/charles-blog/current` 原子切换到新版本。上传目录和日志目录必须放在版本目录之外，
+所有文件显示 `OK` 后，再复制到 `/opt/eric-blog/releases/<版本>`，并把
+`/opt/eric-blog/current` 原子切换到新版本。上传目录和日志目录必须放在版本目录之外，
 这样升级或回滚不会丢失业务数据。
 
 ### 3. 初始化 MySQL
@@ -161,7 +161,7 @@ MySQL 安装后配置 `blog` 数据库、`utf8mb4` 字符集和 root 密码，�
 
 ### 4. 配置并启动 Java API
 
-创建权限为 `600` 的 `/etc/charles-blog/blog-server.env`，至少配置以下变量（尖括号内容由部署者填写）：
+创建权限为 `600` 的 `/etc/eric-blog/blog-server.env`，至少配置以下变量（尖括号内容由部署者填写）：
 
 ```env
 SPRING_PROFILES_ACTIVE=prod
@@ -171,8 +171,8 @@ BLOG_DB_URL=jdbc:mysql://127.0.0.1:3306/blog?useUnicode=true&characterEncoding=u
 BLOG_DB_USERNAME=root
 BLOG_DB_PASSWORD=<MYSQL_ROOT_PASSWORD>
 BLOG_JWT_SECRET=<openssl rand -base64 48 生成的随机值>
-BLOG_STORAGE_ROOT=/var/lib/charles-blog/uploads
-BLOG_LOG_FILE=/var/log/charles-blog/blog-server.log
+BLOG_STORAGE_ROOT=/var/lib/eric-blog/uploads
+BLOG_LOG_FILE=/var/log/eric-blog/blog-server.log
 BLOG_CORS_ALLOWED_ORIGINS=https://blog.45205044.xyz
 BLOG_SECURE_COOKIE=true
 ```
@@ -195,9 +195,9 @@ Nginx 使用 host 网络监听本机 80：根路径提供用户端，`/admin/` �
 `/uploads/` 代理到 `127.0.0.1:8080`。在当前版本目录执行：
 
 ```bash
-cd /opt/charles-blog/current
+cd /opt/eric-blog/current
 sudo NGINX_CONFIG_FILE=nginx.http.conf \
-  docker compose -p charles-blog -f deploy/docker-compose.yml up -d nginx
+  docker compose -p eric-blog -f deploy/docker-compose.yml up -d nginx
 
 curl --fail http://127.0.0.1/
 curl --fail http://127.0.0.1/admin/
@@ -209,12 +209,12 @@ curl --fail http://127.0.0.1/api/site/home
 
 ### 6. 配置 Cloudflare HTTPS
 
-在 Cloudflare 中将域名接入并创建 `charles-blog` Tunnel：
+在 Cloudflare 中将域名接入并创建 `eric-blog` Tunnel：
 
 1. 将域名注册商的 NS 修改为 Cloudflare 分配的名称服务器。
 2. 删除 `blog.45205044.xyz` 旧的 A/AAAA 记录，避免请求继续到旧源站。
 3. 创建 Tunnel 的 Docker 连接器，把 Tunnel Token 写入服务器的
-   `/etc/charles-blog/cloudflared.env`（权限 `600`），启动 `cloudflare/cloudflared` 容器。
+   `/etc/eric-blog/cloudflared.env`（权限 `600`），启动 `cloudflare/cloudflared` 容器。
 4. 在 Public Hostname 添加 `blog.45205044.xyz`，Service 选择 `HTTP`，URL 填
    `127.0.0.1:80`。
 5. 确认 DNS 为已代理的 Tunnel CNAME，开启 Universal SSL 和“始终使用 HTTPS”。
@@ -226,7 +226,7 @@ curl --fail http://127.0.0.1/api/site/home
 
 ```bash
 sudo systemctl is-active blog-server mysql
-sudo docker ps --filter name=charles-blog
+sudo docker ps --filter name=eric-blog
 curl -I https://blog.45205044.xyz/
 curl -I https://blog.45205044.xyz/admin/
 curl https://blog.45205044.xyz/api/site/home
@@ -293,5 +293,5 @@ npm run test:e2e
 
 生产部署配置位于 `deploy`，采用 Cloudflare Tunnel + Docker Nginx + systemd Java + 本机 MySQL。
 线上用户端位于 `https://blog.45205044.xyz/`，管理端位于 `/admin/`。部署包不包含任何密码，
-敏感配置只在服务器 `/etc/charles-blog` 中生成。完整的构建、上传、数据库、Nginx、Tunnel、
+敏感配置只在服务器 `/etc/eric-blog` 中生成。完整的构建、上传、数据库、Nginx、Tunnel、
 HTTPS、升级及回滚流程见 `deploy/PRODUCTION_DEPLOYMENT.md`。

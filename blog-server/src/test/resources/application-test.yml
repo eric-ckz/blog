@@ -8,7 +8,7 @@ spring:
 blog:
   jwt:
     secret: test-secret-that-is-longer-than-thirty-two-characters
-    issuer: charles-blog-test
+    issuer: eric-blog-test
     access-token-ttl: 15m
     refresh-token-ttl: 7d
     refresh-cookie-name: blog_refresh_token

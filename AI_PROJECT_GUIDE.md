@@ -1,4 +1,4 @@
-# Charles Blog — AI 项目指南（Project Guide for AI）
+# Eric Blog — AI 项目指南（Project Guide for AI）
 
 > 本文件是给 **AI（或其他开发者）阅读** 的项目速览。目的是让阅读者 **无需重新分析整个仓库**，即可理解本项目的架构、技术栈、开发流程与生产部署流程。
 > 如需深入某个模块，请按文中给出的文件路径直接定位。
@@ -8,7 +8,7 @@
 
 ## 1. 项目是什么
 
-**Charles Blog** 是一个个人博客全栈项目，包含三部分：
+**Eric Blog** 是一个个人博客全栈项目，包含三部分：
 
 - **用户端（blog-web）**：读者访问的博客前台，展示文章、栏目、归档、关于页，并支持访客注册、登录、发表评论。
 - **管理端（blog-admin）**：博主使用的内容管理后台，支持文章、栏目、媒体、评论、站点配置管理。
@@ -68,7 +68,7 @@ blog/
 
 - Nginx 使用 **host 网络**，因此 `blog_backend` upstream 指向 `127.0.0.1:8080`。
 - Java 的 `8080` 与 MySQL 的 `3306` 只监听 `127.0.0.1`，不开放公网。
-- 上传文件持久化在 `/var/lib/charles-blog/uploads`，日志在 `/var/log/charles-blog`。
+- 上传文件持久化在 `/var/lib/eric-blog/uploads`，日志在 `/var/log/eric-blog`。
 
 ---
 
@@ -175,7 +175,7 @@ com.eric.blog
 - `BLOG_STORAGE_ROOT` — 上传目录
 - `BLOG_CORS_ALLOWED_ORIGINS` — CORS 来源
 - `BLOG_MAIL_ENABLED` / `BLOG_MAIL_HOST` / `BLOG_MAIL_PORT` / `BLOG_MAIL_USERNAME` / `BLOG_MAIL_PASSWORD` / `BLOG_MAIL_FROM` — SMTP
-- 生产环境变量文件：`/etc/charles-blog/blog-server.env`（权限 600），模板见 `deploy/blog-server.env.example`
+- 生产环境变量文件：`/etc/eric-blog/blog-server.env`（权限 600），模板见 `deploy/blog-server.env.example`
 
 ---
 
@@ -294,14 +294,14 @@ python .\deploy\scripts\package.py
 ### 10.2 完整上线步骤（详见 `deploy/PRODUCTION_DEPLOYMENT.md`）
 
 1. 本地构建三个项目并 `package.py` 打包
-2. 上传 ZIP 到服务器（如 `/home/ubuntu/blog-deploy.zip`），解压到 `/opt/charles-blog/releases/<版本>`，`current` 原子切换到新版本
+2. 上传 ZIP 到服务器（如 `/home/ubuntu/blog-deploy.zip`），解压到 `/opt/eric-blog/releases/<版本>`，`current` 原子切换到新版本
 3. 初始化 MySQL（`blog` 库、utf8mb4、Flyway 自动建表）
-4. 创建 `/etc/charles-blog/blog-server.env`（权限 600），配置 DB/JWT/上传/日志/生产环境变量
+4. 创建 `/etc/eric-blog/blog-server.env`（权限 600），配置 DB/JWT/上传/日志/生产环境变量
 5. 安装 systemd 服务并启动：`systemctl enable --now blog-server`；首次启动 Flyway 建表并创建初始管理员，确认后删除初始密码并重启
 6. 启动 Nginx 容器（host 网络，监听 80）：
 
 ```bash
-sudo NGINX_CONFIG_FILE=nginx.http.conf docker compose -p charles-blog -f deploy/docker-compose.yml up -d nginx
+sudo NGINX_CONFIG_FILE=nginx.http.conf docker compose -p eric-blog -f deploy/docker-compose.yml up -d nginx
 ```
 
 7. 配置 Cloudflare Tunnel（把域名解析到 Cloudflare，创建 Tunnel，Public Hostname 指向 `127.0.0.1:80`），启用 HTTPS
@@ -317,8 +317,8 @@ sudo NGINX_CONFIG_FILE=nginx.http.conf docker compose -p charles-blog -f deploy/
 
 - Nginx：`deploy/nginx/nginx.conf`（HTTPS）、`deploy/nginx/nginx.http.conf`（HTTP 首次签证书）
 - systemd：`deploy/systemd/blog-server.service`
-- logrotate：`deploy/logrotate/charles-blog`
-- MySQL 配置：`deploy/mysql/90-charles-blog.cnf`
+- logrotate：`deploy/logrotate/eric-blog`
+- MySQL 配置：`deploy/mysql/90-eric-blog.cnf`
 - Docker Compose：`deploy/docker-compose.yml`（Nginx）
 - 脚本：`deploy/scripts/`（package.py、install.sh、enable_https.sh、enable_cloudflare_tunnel.sh、remote_upload.py、remote_exec.py）
 

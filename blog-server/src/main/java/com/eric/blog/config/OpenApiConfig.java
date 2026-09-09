@@ -12,7 +12,7 @@ public class OpenApiConfig {
     @Bean
     public OpenAPI blogOpenApi() {
         return new OpenAPI().info(new Info()
-                .title("Charles Blog API")
+                .title("Eric Blog API")
                 .description("博客用户端与管理端统一接口")
                 .version("1.0.0"));
     }

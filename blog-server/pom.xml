@@ -15,7 +15,7 @@
     <artifactId>blog-server</artifactId>
     <version>1.0.0</version>
     <name>blog-server</name>
-    <description>Charles Blog 用户端与管理端 API 服务</description>
+    <description>Eric Blog 用户端与管理端 API 服务</description>
 
     <properties>
         <java.version>21</java.version>

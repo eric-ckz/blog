@@ -19,7 +19,7 @@ class JwtTokenServiceTests {
     void setUp() {
         JwtProperties properties = new JwtProperties();
         properties.setSecret("test-secret-that-is-longer-than-thirty-two-characters");
-        properties.setIssuer("charles-blog-test");
+        properties.setIssuer("eric-blog-test");
         properties.setAccessTokenTtl(Duration.ofMinutes(15));
         properties.setRefreshTokenTtl(Duration.ofDays(7));
         service = new JwtTokenService(properties);

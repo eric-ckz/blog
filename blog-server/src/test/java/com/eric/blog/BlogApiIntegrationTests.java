@@ -167,7 +167,7 @@ class BlogApiIntegrationTests {
 
     private HttpResponse<String> upload(byte[] content, String filename, String contentType, String accessToken)
             throws Exception {
-        String boundary = "----CharlesBlogBoundary" + System.nanoTime();
+        String boundary = "----EricBlogBoundary" + System.nanoTime();
         ByteArrayOutputStream body = new ByteArrayOutputStream();
         body.write(("--" + boundary + "\r\n").getBytes(StandardCharsets.UTF_8));
         body.write(("Content-Disposition: form-data; name=\"file\"; filename=\"" + filename + "\"\r\n")

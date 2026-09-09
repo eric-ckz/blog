@@ -1,4 +1,4 @@
-/var/log/charles-blog/*.log {
+/var/log/eric-blog/*.log {
     daily
     rotate 14
     size 20M

@@ -36,7 +36,7 @@ blog:
   jwt:
     # JWT 密钥没有默认值，防止测试密钥被误用于正式环境。
     secret: ${BLOG_JWT_SECRET}
-    issuer: charles-blog
+    issuer: eric-blog
     access-token-ttl: 15m
     refresh-token-ttl: 7d
     refresh-cookie-name: blog_refresh_token

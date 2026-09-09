@@ -30,7 +30,7 @@ onMounted(async () => {
           <span>{{ label }}</span><div><i :style="{ width: `${Math.max(8, count / Math.max(data.articles, 1) * 100)}%` }" /></div><strong>{{ count }}</strong>
         </div>
       </section>
-      <section class="panel quiet-panel"><p class="eyebrow">WRITING NOTE</p><blockquote>“文字不是为了追赶时间，而是为了在未来的某一天，仍能认出当时的自己。”</blockquote><span>— Charles Blog</span></section>
+      <section class="panel quiet-panel"><p class="eyebrow">WRITING NOTE</p><blockquote>“文字不是为了追赶时间，而是为了在未来的某一天，仍能认出当时的自己。”</blockquote><span>— Eric Blog</span></section>
     </div>
   </el-skeleton>
 </template>

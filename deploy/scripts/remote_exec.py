@@ -19,7 +19,7 @@ import paramiko
 
 def parse_args() -> argparse.Namespace:
     """读取连接信息和脚本；敏感密码刻意不允许通过命令行参数传递。"""
-    parser = argparse.ArgumentParser(description="执行 Charles Blog 远程部署命令")
+    parser = argparse.ArgumentParser(description="执行 Eric Blog 远程部署命令")
     parser.add_argument("--host", default="106.52.157.170")
     parser.add_argument("--user", default="ubuntu")
     parser.add_argument("--script-base64", required=True)

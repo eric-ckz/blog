@@ -9,7 +9,7 @@ if [[ "${EUID}" -ne 0 ]]; then
 fi
 
 TOKEN="${CLOUDFLARE_TUNNEL_TOKEN:-}"
-RELEASE_ROOT="${BLOG_RELEASE_ROOT:-/opt/charles-blog/current}"
+RELEASE_ROOT="${BLOG_RELEASE_ROOT:-/opt/eric-blog/current}"
 COMPOSE_FILE="${RELEASE_ROOT}/deploy/docker-compose.yml"
 
 if [[ -z "${TOKEN}" ]]; then
@@ -23,22 +23,22 @@ if [[ ! -r "${COMPOSE_FILE}" ]]; then
 fi
 
 # Token 只落盘到 root-only 环境文件，不写入脚本、发布目录或命令参数。
-install -d -m 0700 /etc/charles-blog
+install -d -m 0700 /etc/eric-blog
 umask 077
-printf 'TUNNEL_TOKEN=%s\n' "${TOKEN}" > /etc/charles-blog/cloudflared.env
+printf 'TUNNEL_TOKEN=%s\n' "${TOKEN}" > /etc/eric-blog/cloudflared.env
 unset TOKEN CLOUDFLARE_TUNNEL_TOKEN
 
-docker compose --profile tunnel -p charles-blog -f "${COMPOSE_FILE}" pull cloudflared
-docker compose --profile tunnel -p charles-blog -f "${COMPOSE_FILE}" up -d cloudflared
+docker compose --profile tunnel -p eric-blog -f "${COMPOSE_FILE}" pull cloudflared
+docker compose --profile tunnel -p eric-blog -f "${COMPOSE_FILE}" up -d cloudflared
 
 for _ in {1..30}; do
-  if docker logs charles-blog-cloudflared 2>&1 | grep -q 'Registered tunnel connection'; then
+  if docker logs eric-blog-cloudflared 2>&1 | grep -q 'Registered tunnel connection'; then
     echo "CLOUDFLARE_TUNNEL_CONNECTED"
     exit 0
   fi
   sleep 2
 done
 
-docker logs --tail 80 charles-blog-cloudflared >&2
+docker logs --tail 80 eric-blog-cloudflared >&2
 echo "Tunnel 未在预期时间内建立连接" >&2
 exit 1

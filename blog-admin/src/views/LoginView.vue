@@ -33,7 +33,7 @@ async function submit() {
         <div class="login-logo"><Coffee :size="25" /></div>
         <p class="eyebrow">A PERSONAL JOURNAL SINCE 2020</p>
         <h1>让每一篇文字<br />都有被认真安放的位置</h1>
-        <p>Charles Blog 内容管理后台</p>
+        <p>Eric Blog 内容管理后台</p>
         <blockquote>认真生活，诚实记录。</blockquote>
       </div>
       <div class="login-form">

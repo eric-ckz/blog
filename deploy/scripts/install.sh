@@ -9,7 +9,7 @@ fi
 
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 PACKAGE_ROOT="$(cd "${SCRIPT_DIR}/../.." && pwd)"
-DEPLOY_ENV="${DEPLOY_ENV:-/etc/charles-blog/install.env}"
+DEPLOY_ENV="${DEPLOY_ENV:-/etc/eric-blog/install.env}"
 
 if [[ ! -r "${DEPLOY_ENV}" ]]; then
   echo "缺少仅限 root 读取的部署变量文件：${DEPLOY_ENV}" >&2
@@ -33,7 +33,7 @@ if [[ -f "${PACKAGE_ROOT}/manifest.sha256" ]]; then
 fi
 
 BACKUP_ROOT="/home/ubuntu/backups/pre-blog-${VERSION}"
-RELEASE_ROOT="/opt/charles-blog/releases/${VERSION}"
+RELEASE_ROOT="/opt/eric-blog/releases/${VERSION}"
 
 backup_existing_services() {
   install -d -m 0700 "${BACKUP_ROOT}"
@@ -63,8 +63,8 @@ install_mysql() {
   export DEBIAN_FRONTEND=noninteractive
   apt-get update
   apt-get install -y mysql-server curl ca-certificates unzip
-  install -m 0644 "${PACKAGE_ROOT}/deploy/mysql/90-charles-blog.cnf" \
-    /etc/mysql/mysql.conf.d/90-charles-blog.cnf
+  install -m 0644 "${PACKAGE_ROOT}/deploy/mysql/90-eric-blog.cnf" \
+    /etc/mysql/mysql.conf.d/90-eric-blog.cnf
   systemctl enable --now mysql.service
   systemctl restart mysql.service
 
@@ -105,7 +105,7 @@ SQL
 }
 
 install_release() {
-  install -d -m 0755 /opt/charles-blog/releases
+  install -d -m 0755 /opt/eric-blog/releases
   if [[ -e "${RELEASE_ROOT}" ]]; then
     echo "版本目录已存在，拒绝覆盖：${RELEASE_ROOT}" >&2
     exit 1
@@ -119,20 +119,20 @@ install_release() {
   chown -R root:root "${RELEASE_ROOT}"
   chmod -R a-w "${RELEASE_ROOT}"
 
-  install -d -o ubuntu -g ubuntu -m 0750 /var/lib/charles-blog/uploads
-  install -d -o ubuntu -g ubuntu -m 0750 /var/log/charles-blog
+  install -d -o ubuntu -g ubuntu -m 0750 /var/lib/eric-blog/uploads
+  install -d -o ubuntu -g ubuntu -m 0750 /var/log/eric-blog
   # 种子数据中的 URL 固定包含 2026/07/seed，文件必须保持相同层级才能被 /uploads 正确访问。
-  install -d -o ubuntu -g ubuntu -m 0750 /var/lib/charles-blog/uploads/2026/07/seed
-  cp -an "${PACKAGE_ROOT}/seed-uploads/." /var/lib/charles-blog/uploads/2026/07/seed/
-  chown -R ubuntu:ubuntu /var/lib/charles-blog/uploads /var/log/charles-blog
+  install -d -o ubuntu -g ubuntu -m 0750 /var/lib/eric-blog/uploads/2026/07/seed
+  cp -an "${PACKAGE_ROOT}/seed-uploads/." /var/lib/eric-blog/uploads/2026/07/seed/
+  chown -R ubuntu:ubuntu /var/lib/eric-blog/uploads /var/log/eric-blog
 
-  ln -sfn "releases/${VERSION}" /opt/charles-blog/current.next
-  mv -Tf /opt/charles-blog/current.next /opt/charles-blog/current
+  ln -sfn "releases/${VERSION}" /opt/eric-blog/current.next
+  mv -Tf /opt/eric-blog/current.next /opt/eric-blog/current
 }
 
 install_runtime_config() {
-  install -d -m 0700 /etc/charles-blog
-  cat > /etc/charles-blog/blog-server.env <<EOF
+  install -d -m 0700 /etc/eric-blog
+  cat > /etc/eric-blog/blog-server.env <<EOF
 SPRING_PROFILES_ACTIVE=prod
 SERVER_ADDRESS=127.0.0.1
 SERVER_PORT=8080
@@ -140,8 +140,8 @@ BLOG_DB_URL=jdbc:mysql://127.0.0.1:3306/blog?useUnicode=true&characterEncoding=u
 BLOG_DB_USERNAME=root
 BLOG_DB_PASSWORD=${MYSQL_ROOT_PASSWORD}
 BLOG_JWT_SECRET=${BLOG_JWT_SECRET}
-BLOG_STORAGE_ROOT=/var/lib/charles-blog/uploads
-BLOG_LOG_FILE=/var/log/charles-blog/blog-server.log
+BLOG_STORAGE_ROOT=/var/lib/eric-blog/uploads
+BLOG_LOG_FILE=/var/log/eric-blog/blog-server.log
 # Cloudflare 可能以 HTTPS 向浏览器提供站点，但回源仍使用 HTTP，因此两种浏览器 Origin 都必须精确允许。
 BLOG_CORS_ALLOWED_ORIGINS=http://blog.45205044.xyz,https://blog.45205044.xyz
 BLOG_SECURE_COOKIE=false
@@ -149,12 +149,12 @@ BLOG_ADMIN_USERNAME=admin
 BLOG_ADMIN_PASSWORD=${BLOG_ADMIN_PASSWORD}
 BLOG_ADMIN_DISPLAY_NAME=博客管理员
 EOF
-  chmod 0600 /etc/charles-blog/blog-server.env
+  chmod 0600 /etc/eric-blog/blog-server.env
 
   install -m 0644 "${PACKAGE_ROOT}/deploy/systemd/blog-server.service" \
     /etc/systemd/system/blog-server.service
-  install -m 0644 "${PACKAGE_ROOT}/deploy/logrotate/charles-blog" \
-    /etc/logrotate.d/charles-blog
+  install -m 0644 "${PACKAGE_ROOT}/deploy/logrotate/eric-blog" \
+    /etc/logrotate.d/eric-blog
   systemctl daemon-reload
 }
 
@@ -169,13 +169,13 @@ start_and_verify() {
   curl --fail --silent http://127.0.0.1:8080/api/site/home >/dev/null
 
   # 初始管理员成功写入数据库后立即移除环境文件中的明文初始化密码。
-  sed -i '/^BLOG_ADMIN_/d' /etc/charles-blog/blog-server.env
+  sed -i '/^BLOG_ADMIN_/d' /etc/eric-blog/blog-server.env
   systemctl restart blog-server.service
   curl --retry 30 --retry-delay 2 --retry-connrefused --fail --silent \
     http://127.0.0.1:8080/api/site/home >/dev/null
 
-  docker compose -p charles-blog -f /opt/charles-blog/current/deploy/docker-compose.yml pull
-  docker compose -p charles-blog -f /opt/charles-blog/current/deploy/docker-compose.yml up -d --force-recreate
+  docker compose -p eric-blog -f /opt/eric-blog/current/deploy/docker-compose.yml pull
+  docker compose -p eric-blog -f /opt/eric-blog/current/deploy/docker-compose.yml up -d --force-recreate
   curl --retry 30 --retry-delay 2 --retry-connrefused --fail --silent \
     http://127.0.0.1/ >/dev/null
   curl --fail --silent http://127.0.0.1/admin/ >/dev/null
@@ -183,10 +183,10 @@ start_and_verify() {
 }
 
 prune_old_releases() {
-  mapfile -t releases < <(find /opt/charles-blog/releases -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort -r)
+  mapfile -t releases < <(find /opt/eric-blog/releases -mindepth 1 -maxdepth 1 -type d -printf '%f\n' | sort -r)
   if (( ${#releases[@]} > 3 )); then
     for old_release in "${releases[@]:3}"; do
-      rm -rf -- "/opt/charles-blog/releases/${old_release}"
+      rm -rf -- "/opt/eric-blog/releases/${old_release}"
     done
   fi
 }

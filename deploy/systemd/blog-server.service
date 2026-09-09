@@ -1,5 +1,5 @@
 [Unit]
-Description=Charles Blog Java API
+Description=Eric Blog Java API
 After=network-online.target mysql.service docker.service
 Wants=network-online.target
 Requires=mysql.service
@@ -8,9 +8,9 @@ Requires=mysql.service
 Type=simple
 User=ubuntu
 Group=ubuntu
-WorkingDirectory=/opt/charles-blog/current/server
-EnvironmentFile=/etc/charles-blog/blog-server.env
-ExecStart=/usr/bin/java -Xms128m -Xmx512m -XX:MaxMetaspaceSize=192m -XX:+UseG1GC -Dfile.encoding=UTF-8 -jar /opt/charles-blog/current/server/blog-server.jar
+WorkingDirectory=/opt/eric-blog/current/server
+EnvironmentFile=/etc/eric-blog/blog-server.env
+ExecStart=/usr/bin/java -Xms128m -Xmx512m -XX:MaxMetaspaceSize=192m -XX:+UseG1GC -Dfile.encoding=UTF-8 -jar /opt/eric-blog/current/server/blog-server.jar
 SuccessExitStatus=143
 Restart=on-failure
 RestartSec=5s
@@ -22,7 +22,7 @@ NoNewPrivileges=true
 PrivateTmp=true
 ProtectSystem=strict
 ProtectHome=true
-ReadWritePaths=/var/lib/charles-blog/uploads /var/log/charles-blog
+ReadWritePaths=/var/lib/eric-blog/uploads /var/log/eric-blog
 MemoryMax=896M
 TasksMax=256
 

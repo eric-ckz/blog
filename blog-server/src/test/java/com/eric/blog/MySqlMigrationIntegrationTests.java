@@ -24,7 +24,7 @@ class MySqlMigrationIntegrationTests {
 
     @Container
     private static final MySQLContainer<?> MYSQL = new MySQLContainer<>("mysql:8.4")
-            .withDatabaseName("charles_blog_test")
+            .withDatabaseName("eric_blog_test")
             .withUsername("blog_test")
             .withPassword("blog_test_password");
 

@@ -1,4 +1,4 @@
--- Charles Blog 初始表结构（MySQL 8）。
+-- Eric Blog 初始表结构（MySQL 8）。
 -- 所有业务 ID 由 MyBatis-Plus 雪花算法生成，因此不依赖数据库自增列。
 -- 每张表和每个字段均声明中文 COMMENT，便于在 IDEA、DataGrip 等工具中直接理解数据模型。
 

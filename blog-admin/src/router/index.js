@@ -41,7 +41,7 @@ router.beforeEach(async (to) => {
 })
 
 router.afterEach((to) => {
-  document.title = `${to.meta.title || '管理后台'} · Charles Blog`
+  document.title = `${to.meta.title || '管理后台'} · Eric Blog`
 })
 
 export default router

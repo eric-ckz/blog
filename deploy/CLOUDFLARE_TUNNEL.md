@@ -5,7 +5,7 @@
 
 ## 首次启用
 
-1. 在 Cloudflare Zero Trust 的 `Networks -> Tunnels` 创建名为 `charles-blog` 的 Tunnel。
+1. 在 Cloudflare Zero Trust 的 `Networks -> Tunnels` 创建名为 `eric-blog` 的 Tunnel。
 2. 复制 Docker 安装命令中 `--token` 后面的 token。
 3. 在服务器执行以下命令，避免 token 进入 Shell 历史：
 
@@ -13,7 +13,7 @@
 read -rsp 'Tunnel token: ' CLOUDFLARE_TUNNEL_TOKEN; echo
 export CLOUDFLARE_TUNNEL_TOKEN
 sudo --preserve-env=CLOUDFLARE_TUNNEL_TOKEN \
-  bash /opt/charles-blog/current/deploy/scripts/enable_cloudflare_tunnel.sh
+  bash /opt/eric-blog/current/deploy/scripts/enable_cloudflare_tunnel.sh
 unset CLOUDFLARE_TUNNEL_TOKEN
 ```
 
@@ -42,19 +42,19 @@ blog -> <tunnel-id>.cfargotunnel.com
 
 ```bash
 # 查看 Tunnel 连接，正常日志应包含 Registered tunnel connection。
-sudo docker logs --tail 100 charles-blog-cloudflared
+sudo docker logs --tail 100 eric-blog-cloudflared
 
 # 重启 Tunnel。
-sudo docker restart charles-blog-cloudflared
+sudo docker restart eric-blog-cloudflared
 
 # 更新 cloudflared 镜像并重建容器；不会更换证书或 Tunnel 身份。
-sudo docker compose --profile tunnel -p charles-blog \
-  -f /opt/charles-blog/current/deploy/docker-compose.yml pull cloudflared
-sudo docker compose --profile tunnel -p charles-blog \
-  -f /opt/charles-blog/current/deploy/docker-compose.yml up -d cloudflared
+sudo docker compose --profile tunnel -p eric-blog \
+  -f /opt/eric-blog/current/deploy/docker-compose.yml pull cloudflared
+sudo docker compose --profile tunnel -p eric-blog \
+  -f /opt/eric-blog/current/deploy/docker-compose.yml up -d cloudflared
 
 # 更换 Tunnel token。执行后重新运行首次启用脚本即可。
-sudo rm -f /etc/charles-blog/cloudflared.env
+sudo rm -f /etc/eric-blog/cloudflared.env
 ```
 
 只要 Tunnel 容器在线，Cloudflare 会自动管理边缘证书，不需要 `certbot renew`。若未来完成域名备案并

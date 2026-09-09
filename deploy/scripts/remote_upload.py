@@ -18,7 +18,7 @@ import paramiko
 
 def parse_args() -> argparse.Namespace:
     """Read the local source and an absolute staging destination on the remote host."""
-    parser = argparse.ArgumentParser(description="Upload Charles Blog deployment assets through SFTP")
+    parser = argparse.ArgumentParser(description="Upload Eric Blog deployment assets through SFTP")
     parser.add_argument("--source", required=True, type=Path)
     parser.add_argument("--destination", required=True)
     parser.add_argument("--host", default="106.52.157.170")

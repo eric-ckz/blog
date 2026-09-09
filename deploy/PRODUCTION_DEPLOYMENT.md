@@ -1,4 +1,4 @@
-# Charles Blog 从构建到生产部署完整手册
+# Eric Blog 从构建到生产部署完整手册
 
 本文记录当前项目从本地构建三个应用，到 Ubuntu 服务器、MySQL、systemd、Docker Nginx、
 Cloudflare Tunnel 和公网 HTTPS 的完整部署流程。命令以当前项目和域名为例，但所有密码、
@@ -55,11 +55,11 @@ artifacts/      本地生成的部署 ZIP，不提交 Git
 服务器：
 
 ```text
-/opt/charles-blog/releases/<版本号>/   不可变发布版本
-/opt/charles-blog/current              当前版本软链接
-/etc/charles-blog/                     root-only 敏感配置
-/var/lib/charles-blog/uploads/         永久上传文件
-/var/log/charles-blog/                 Java 日志
+/opt/eric-blog/releases/<版本号>/   不可变发布版本
+/opt/eric-blog/current              当前版本软链接
+/etc/eric-blog/                     root-only 敏感配置
+/var/lib/eric-blog/uploads/         永久上传文件
+/var/log/eric-blog/                 Java 日志
 /home/ubuntu/                           上传和解压暂存区
 ```
 
@@ -259,8 +259,8 @@ cd /home/sub2api && sudo docker compose stop
 
 ```bash
 sudo install -m 0644 \
-  "${STAGING}/deploy/mysql/90-charles-blog.cnf" \
-  /etc/mysql/mysql.conf.d/90-charles-blog.cnf
+  "${STAGING}/deploy/mysql/90-eric-blog.cnf" \
+  /etc/mysql/mysql.conf.d/90-eric-blog.cnf
 sudo systemctl restart mysql
 ```
 
@@ -312,9 +312,9 @@ mysql -h 127.0.0.1 -uroot -p -e "SHOW DATABASES LIKE 'blog';"
 创建不可变版本目录和持久化目录：
 
 ```bash
-RELEASE="/opt/charles-blog/releases/${VERSION}"
+RELEASE="/opt/eric-blog/releases/${VERSION}"
 
-sudo install -d -m 0755 /opt/charles-blog/releases
+sudo install -d -m 0755 /opt/eric-blog/releases
 sudo install -d -m 0755 "${RELEASE}"
 sudo cp -a "${STAGING}/web" "${RELEASE}/web"
 sudo cp -a "${STAGING}/admin" "${RELEASE}/admin"
@@ -325,22 +325,22 @@ sudo chown -R root:root "${RELEASE}"
 sudo chmod -R a-w "${RELEASE}"
 
 sudo install -d -o ubuntu -g ubuntu -m 0750 \
-  /var/lib/charles-blog/uploads \
-  /var/log/charles-blog
+  /var/lib/eric-blog/uploads \
+  /var/log/eric-blog
 
 sudo install -d -o ubuntu -g ubuntu -m 0750 \
-  /var/lib/charles-blog/uploads/2026/07/seed
+  /var/lib/eric-blog/uploads/2026/07/seed
 sudo cp -an "${STAGING}/seed-uploads/." \
-  /var/lib/charles-blog/uploads/2026/07/seed/
+  /var/lib/eric-blog/uploads/2026/07/seed/
 sudo chown -R ubuntu:ubuntu \
-  /var/lib/charles-blog/uploads \
-  /var/log/charles-blog
+  /var/lib/eric-blog/uploads \
+  /var/log/eric-blog
 
-sudo ln -sfn "releases/${VERSION}" /opt/charles-blog/current.next
-sudo mv -Tf /opt/charles-blog/current.next /opt/charles-blog/current
+sudo ln -sfn "releases/${VERSION}" /opt/eric-blog/current.next
+sudo mv -Tf /opt/eric-blog/current.next /opt/eric-blog/current
 ```
 
-不要把上传目录放到 `/opt/charles-blog/current` 中，否则版本回滚会覆盖或丢失用户上传文件。
+不要把上传目录放到 `/opt/eric-blog/current` 中，否则版本回滚会覆盖或丢失用户上传文件。
 
 ## 10. 配置 Java 生产环境
 
@@ -353,8 +353,8 @@ openssl rand -base64 48
 创建仅 root 可读的环境文件：
 
 ```bash
-sudo install -d -m 0700 /etc/charles-blog
-sudoedit /etc/charles-blog/blog-server.env
+sudo install -d -m 0700 /etc/eric-blog
+sudoedit /etc/eric-blog/blog-server.env
 ```
 
 内容如下：
@@ -367,8 +367,8 @@ BLOG_DB_URL=jdbc:mysql://127.0.0.1:3306/blog?useUnicode=true&characterEncoding=u
 BLOG_DB_USERNAME=root
 BLOG_DB_PASSWORD=<MYSQL_ROOT_PASSWORD>
 BLOG_JWT_SECRET=<OPENSSL生成的随机密钥>
-BLOG_STORAGE_ROOT=/var/lib/charles-blog/uploads
-BLOG_LOG_FILE=/var/log/charles-blog/blog-server.log
+BLOG_STORAGE_ROOT=/var/lib/eric-blog/uploads
+BLOG_LOG_FILE=/var/log/eric-blog/blog-server.log
 BLOG_CORS_ALLOWED_ORIGINS=https://blog.45205044.xyz
 BLOG_SECURE_COOKIE=true
 BLOG_ADMIN_USERNAME=admin
@@ -379,8 +379,8 @@ BLOG_ADMIN_DISPLAY_NAME=博客管理员
 设置权限：
 
 ```bash
-sudo chown root:root /etc/charles-blog/blog-server.env
-sudo chmod 600 /etc/charles-blog/blog-server.env
+sudo chown root:root /etc/eric-blog/blog-server.env
+sudo chmod 600 /etc/eric-blog/blog-server.env
 ```
 
 `BLOG_STORAGE_ROOT` 必须使用绝对路径。若使用 `./uploads`，systemd 工作目录会影响最终位置，
@@ -390,12 +390,12 @@ sudo chmod 600 /etc/charles-blog/blog-server.env
 
 ```bash
 sudo install -m 0644 \
-  /opt/charles-blog/current/deploy/systemd/blog-server.service \
+  /opt/eric-blog/current/deploy/systemd/blog-server.service \
   /etc/systemd/system/blog-server.service
 
 sudo install -m 0644 \
-  /opt/charles-blog/current/deploy/logrotate/charles-blog \
-  /etc/logrotate.d/charles-blog
+  /opt/eric-blog/current/deploy/logrotate/eric-blog \
+  /etc/logrotate.d/eric-blog
 
 sudo systemctl daemon-reload
 sudo systemctl enable --now blog-server
@@ -414,7 +414,7 @@ mysql -h 127.0.0.1 -uroot -p blog \
 管理员创建成功后，从环境文件删除初始化明文密码，保留其他生产变量：
 
 ```bash
-sudo sed -i '/^BLOG_ADMIN_/d' /etc/charles-blog/blog-server.env
+sudo sed -i '/^BLOG_ADMIN_/d' /etc/eric-blog/blog-server.env
 sudo systemctl restart blog-server
 ```
 
@@ -426,17 +426,17 @@ sudo systemctl restart blog-server
 不依赖源站证书的配置：
 
 ```bash
-cd /opt/charles-blog/current
+cd /opt/eric-blog/current
 sudo NGINX_CONFIG_FILE=nginx.http.conf \
-  docker compose -p charles-blog -f deploy/docker-compose.yml \
+  docker compose -p eric-blog -f deploy/docker-compose.yml \
   up -d nginx
 ```
 
 验证：
 
 ```bash
-sudo docker ps --filter name=charles-blog-nginx
-sudo docker logs --tail 100 charles-blog-nginx
+sudo docker ps --filter name=eric-blog-nginx
+sudo docker logs --tail 100 eric-blog-nginx
 curl -I http://127.0.0.1/
 curl -I http://127.0.0.1/admin/
 curl http://127.0.0.1/api/site/home
@@ -473,7 +473,7 @@ blog  A  <服务器公网IP>
 在 Cloudflare 控制台操作：
 
 1. 进入 `Zero Trust / Networks / Tunnels`。
-2. 创建 Cloudflared Tunnel，名称填写 `charles-blog`。
+2. 创建 Cloudflared Tunnel，名称填写 `eric-blog`。
 3. 选择 Docker 环境。
 4. 复制安装命令中 `--token` 后面的 Token。
 
@@ -483,22 +483,22 @@ Token 不要直接写在 Shell 命令历史中。服务器执行：
 read -rsp 'Tunnel token: ' CLOUDFLARE_TUNNEL_TOKEN; echo
 export CLOUDFLARE_TUNNEL_TOKEN
 sudo --preserve-env=CLOUDFLARE_TUNNEL_TOKEN \
-  bash /opt/charles-blog/current/deploy/scripts/enable_cloudflare_tunnel.sh
+  bash /opt/eric-blog/current/deploy/scripts/enable_cloudflare_tunnel.sh
 unset CLOUDFLARE_TUNNEL_TOKEN
 ```
 
 脚本会把 Token 写入：
 
 ```text
-/etc/charles-blog/cloudflared.env
+/etc/eric-blog/cloudflared.env
 ```
 
 文件权限必须是 `600 root:root`。然后确认：
 
 ```bash
-sudo docker ps --filter name=charles-blog-cloudflared
-sudo docker logs --tail 100 charles-blog-cloudflared
-sudo stat -c '%a %U:%G %n' /etc/charles-blog/cloudflared.env
+sudo docker ps --filter name=eric-blog-cloudflared
+sudo docker logs --tail 100 eric-blog-cloudflared
+sudo stat -c '%a %U:%G %n' /etc/eric-blog/cloudflared.env
 ```
 
 正常日志中应包含：
@@ -587,7 +587,7 @@ sudo ss -lntp | grep -E ':(80|443|8080|3306|3000|3100|8090)\b'
 ```bash
 # 服务状态
 sudo systemctl is-active blog-server mysql
-sudo docker ps --filter name=charles-blog
+sudo docker ps --filter name=eric-blog
 
 # Java 和数据库
 curl --fail http://127.0.0.1:8080/api/site/home
@@ -599,7 +599,7 @@ curl --fail http://127.0.0.1/admin/
 curl --fail http://127.0.0.1/api/site/home
 
 # Tunnel
-sudo docker logs --tail 100 charles-blog-cloudflared | \
+sudo docker logs --tail 100 eric-blog-cloudflared | \
   grep 'Registered tunnel connection'
 
 # 公网
@@ -625,7 +625,7 @@ curl https://blog.45205044.xyz/api/site/home
 ```bash
 sudo systemctl status blog-server --no-pager
 sudo journalctl -u blog-server -f
-tail -f /var/log/charles-blog/blog-server.log
+tail -f /var/log/eric-blog/blog-server.log
 ```
 
 重启 Java：
@@ -637,26 +637,26 @@ sudo systemctl restart blog-server
 查看和重启 Nginx：
 
 ```bash
-sudo docker logs --tail 100 charles-blog-nginx
-sudo docker restart charles-blog-nginx
+sudo docker logs --tail 100 eric-blog-nginx
+sudo docker restart eric-blog-nginx
 ```
 
 查看和重启 Tunnel：
 
 ```bash
-sudo docker logs --tail 100 charles-blog-cloudflared
-sudo docker restart charles-blog-cloudflared
+sudo docker logs --tail 100 eric-blog-cloudflared
+sudo docker restart eric-blog-cloudflared
 ```
 
 更新 cloudflared：
 
 ```bash
-sudo docker compose --profile tunnel -p charles-blog \
-  -f /opt/charles-blog/current/deploy/docker-compose.yml \
+sudo docker compose --profile tunnel -p eric-blog \
+  -f /opt/eric-blog/current/deploy/docker-compose.yml \
   pull cloudflared
 
-sudo docker compose --profile tunnel -p charles-blog \
-  -f /opt/charles-blog/current/deploy/docker-compose.yml \
+sudo docker compose --profile tunnel -p eric-blog \
+  -f /opt/eric-blog/current/deploy/docker-compose.yml \
   up -d cloudflared
 ```
 
@@ -665,8 +665,8 @@ sudo docker compose --profile tunnel -p charles-blog \
 1. 本地重新运行三个项目的测试和构建。
 2. 用新的时间版本号生成 ZIP。
 3. 上传、校验并解压。
-4. 复制到新的 `/opt/charles-blog/releases/<版本>`。
-5. 原子切换 `/opt/charles-blog/current`。
+4. 复制到新的 `/opt/eric-blog/releases/<版本>`。
+5. 原子切换 `/opt/eric-blog/current`。
 6. 重启 Java，按 Tunnel 架构重建 Nginx。
 
 切换后执行：
@@ -674,12 +674,12 @@ sudo docker compose --profile tunnel -p charles-blog \
 ```bash
 sudo systemctl restart blog-server
 
-cd /opt/charles-blog/current
+cd /opt/eric-blog/current
 sudo NGINX_CONFIG_FILE=nginx.http.conf \
-  docker compose -p charles-blog -f deploy/docker-compose.yml \
+  docker compose -p eric-blog -f deploy/docker-compose.yml \
   up -d --force-recreate nginx
 
-sudo docker compose --profile tunnel -p charles-blog \
+sudo docker compose --profile tunnel -p eric-blog \
   -f deploy/docker-compose.yml up -d cloudflared
 ```
 
@@ -690,23 +690,23 @@ Flyway 只会执行尚未执行过的新迁移。已经上线的迁移 SQL 不�
 先查看版本：
 
 ```bash
-readlink -f /opt/charles-blog/current
-ls -1 /opt/charles-blog/releases
+readlink -f /opt/eric-blog/current
+ls -1 /opt/eric-blog/releases
 ```
 
 切换到旧版本：
 
 ```bash
 OLD_VERSION=<旧版本号>
-sudo ln -sfn "releases/${OLD_VERSION}" /opt/charles-blog/current.next
-sudo mv -Tf /opt/charles-blog/current.next /opt/charles-blog/current
+sudo ln -sfn "releases/${OLD_VERSION}" /opt/eric-blog/current.next
+sudo mv -Tf /opt/eric-blog/current.next /opt/eric-blog/current
 sudo systemctl restart blog-server
 
-cd /opt/charles-blog/current
+cd /opt/eric-blog/current
 sudo NGINX_CONFIG_FILE=nginx.http.conf \
-  docker compose -p charles-blog -f deploy/docker-compose.yml \
+  docker compose -p eric-blog -f deploy/docker-compose.yml \
   up -d --force-recreate nginx
-sudo docker compose --profile tunnel -p charles-blog \
+sudo docker compose --profile tunnel -p eric-blog \
   -f deploy/docker-compose.yml up -d cloudflared
 ```
 
@@ -726,7 +726,7 @@ mysqldump -h 127.0.0.1 -uroot -p \
 备份上传文件：
 
 ```bash
-sudo tar -C /var/lib/charles-blog -czf \
+sudo tar -C /var/lib/eric-blog -czf \
   "/home/ubuntu/backups/uploads-$(date +%F-%H%M%S).tar.gz" uploads
 sudo chown ubuntu:ubuntu /home/ubuntu/backups/*.gz
 ```
@@ -748,7 +748,7 @@ sudo chown ubuntu:ubuntu /home/ubuntu/backups/*.gz
 sudo systemctl status blog-server --no-pager
 curl http://127.0.0.1:8080/api/site/home
 curl http://127.0.0.1/api/site/home
-sudo docker ps --filter name=charles-blog
+sudo docker ps --filter name=eric-blog
 ```
 
 ### CORS 错误
@@ -777,13 +777,13 @@ BLOG_CORS_ALLOWED_ORIGINS=https://blog.45205044.xyz
 确认：
 
 ```env
-BLOG_STORAGE_ROOT=/var/lib/charles-blog/uploads
+BLOG_STORAGE_ROOT=/var/lib/eric-blog/uploads
 ```
 
 并检查目录所有者：
 
 ```bash
-sudo chown -R ubuntu:ubuntu /var/lib/charles-blog/uploads
+sudo chown -R ubuntu:ubuntu /var/lib/eric-blog/uploads
 ```
 
 ### 管理端刷新 404
@@ -803,12 +803,12 @@ try_files $uri $uri/ /admin/index.html;
 - `BLOG_JWT_SECRET`
 - 管理员初始化密码
 - Cloudflare Tunnel Token
-- `/etc/charles-blog/*.env` 的真实内容
+- `/etc/eric-blog/*.env` 的真实内容
 
 部署后建议执行：
 
 ```bash
-sudo stat -c '%a %U:%G %n' /etc/charles-blog/*.env
+sudo stat -c '%a %U:%G %n' /etc/eric-blog/*.env
 ```
 
 所有敏感环境文件都应为 `600 root:root`。如果密码曾出现在聊天、终端历史或截图中，应立即轮换。
@@ -829,8 +829,8 @@ sudo stat -c '%a %U:%G %n' /etc/charles-blog/*.env
 创建一次性引导配置：
 
 ```bash
-sudo install -d -m 0700 /etc/charles-blog
-sudoedit /etc/charles-blog/install.env
+sudo install -d -m 0700 /etc/eric-blog
+sudoedit /etc/eric-blog/install.env
 ```
 
 ```env
@@ -840,19 +840,19 @@ BLOG_ADMIN_PASSWORD=<首次管理员强密码>
 ```
 
 ```bash
-sudo chmod 600 /etc/charles-blog/install.env
+sudo chmod 600 /etc/eric-blog/install.env
 cd "${STAGING}"
 sudo NGINX_CONFIG_FILE=nginx.http.conf \
   bash deploy/scripts/install.sh
 ```
 
-该脚本成功后会删除 `/etc/charles-blog/install.env`，但会保留运行所需的
-`/etc/charles-blog/blog-server.env`。随后仍需按第 14 至 16 节创建 Tunnel、配置 CNAME 和启用
+该脚本成功后会删除 `/etc/eric-blog/install.env`，但会保留运行所需的
+`/etc/eric-blog/blog-server.env`。随后仍需按第 14 至 16 节创建 Tunnel、配置 CNAME 和启用
 Cloudflare HTTPS，并执行：
 
 ```bash
 sudo sed -i 's/^BLOG_SECURE_COOKIE=.*/BLOG_SECURE_COOKIE=true/' \
-  /etc/charles-blog/blog-server.env
+  /etc/eric-blog/blog-server.env
 sudo systemctl restart blog-server
 ```
 

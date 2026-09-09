@@ -33,7 +33,7 @@ public class MailServiceImpl implements MailService {
             SimpleMailMessage message = new SimpleMailMessage();
             message.setFrom(properties.getFrom());
             message.setTo(to);
-            message.setSubject("Charles Blog 注册验证码");
+            message.setSubject("Eric Blog 注册验证码");
             message.setText("您的注册验证码是：" + code + "，10 分钟内有效。若非本人操作请忽略。");
             sender.send(message);
         } catch (MailException exception) {

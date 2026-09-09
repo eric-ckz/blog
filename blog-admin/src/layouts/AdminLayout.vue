@@ -40,7 +40,7 @@ async function logout() {
       <div class="admin-brand">
         <div class="brand-mark">C</div>
         <div>
-          <strong>Charles Blog</strong>
+          <strong>Eric Blog</strong>
           <span>CONTENT STUDIO</span>
         </div>
         <button class="sidebar-close" aria-label="关闭菜单" @click="mobileOpen = false"><X :size="20" /></button>
@@ -65,7 +65,7 @@ async function logout() {
     <main class="admin-main">
       <header class="admin-topbar">
         <button class="mobile-menu" aria-label="打开菜单" @click="mobileOpen = true"><Menu :size="21" /></button>
-        <div><span class="eyebrow">CHARLES BLOG</span><h1>{{ pageTitle }}</h1></div>
+        <div><span class="eyebrow">ERIC BLOG</span><h1>{{ pageTitle }}</h1></div>
         <a :href="blogWebUrl" target="_blank" rel="noreferrer">查看网站</a>
       </header>
       <div class="admin-content"><router-view /></div>

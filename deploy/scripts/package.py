@@ -20,7 +20,7 @@ from pathlib import Path
 
 def parse_args() -> argparse.Namespace:
     """读取可选版本号；默认使用本地时间生成不可变发布版本。"""
-    parser = argparse.ArgumentParser(description="打包 Charles Blog 生产部署文件")
+    parser = argparse.ArgumentParser(description="打包 Eric Blog 生产部署文件")
     parser.add_argument("--version", help="版本号，格式 yyyyMMdd-HHmmss")
     return parser.parse_args()
 
